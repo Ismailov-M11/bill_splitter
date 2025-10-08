@@ -1,6 +1,70 @@
 /** @import must precede all other statements */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
 
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --card-bg: #f7f7f8;
+  --muted-text: #6b7280;
+
+  --input-bg: #f4f4f4;
+  --input-border: #d0d0d0;
+  --input-text: #000000;
+
+  --btn-bg: #2ea6ff;
+  --btn-text: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #1c1c1e;
+    --text-color: #ffffff;
+    --card-bg: #2a2a2d;
+    --muted-text: #9aa0a6;
+
+    --input-bg: #2c2c2e;
+    --input-border: #3a3a3c;
+    --input-text: #ffffff;
+
+    --btn-bg: #2ea6ff; /* можно оставить тот же акцент */
+    --btn-text: #ffffff;
+  }
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Карточки/контейнеры, если используются */
+.card,
+.panel,
+.box {
+  background: var(--card-bg);
+  color: var(--text-color);
+}
+
+/* Поля ввода */
+input,
+textarea,
+select {
+  background: var(--input-bg);
+  color: var(--input-text);
+  border: 1px solid var(--input-border);
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted-text);
+}
+
+/* Кнопки по умолчанию */
+button,
+.btn {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -103,17 +167,22 @@
     @apply border-border;
   }
 
-  html, body {
+  html,
+  body {
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
   }
 
   /* Prevent mobile browsers auto-zooming inputs by ensuring readable font size */
-  input, textarea, select, button {
+  input,
+  textarea,
+  select,
+  button {
     font-size: 16px;
   }
 
   body {
-    @apply bg-background text-foreground;
+    background: var(--bg-color);
+    color: var(--text-color);
   }
 }
