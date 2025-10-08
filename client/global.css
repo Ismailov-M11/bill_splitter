@@ -172,6 +172,7 @@ button, .btn {
   }
 
   body {
-    @apply bg-background text-foreground;
+    background: var(--bg-color);
+    color: var(--text-color);
   }
 }
