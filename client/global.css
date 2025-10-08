@@ -37,23 +37,29 @@ body {
 }
 
 /* Карточки/контейнеры, если используются */
-.card, .panel, .box {
+.card,
+.panel,
+.box {
   background: var(--card-bg);
   color: var(--text-color);
 }
 
 /* Поля ввода */
-input, textarea, select {
+input,
+textarea,
+select {
   background: var(--input-bg);
   color: var(--input-text);
   border: 1px solid var(--input-border);
 }
-input::placeholder, textarea::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: var(--muted-text);
 }
 
 /* Кнопки по умолчанию */
-button, .btn {
+button,
+.btn {
   background: var(--btn-bg);
   color: var(--btn-text);
   border: none;
@@ -161,13 +167,17 @@ button, .btn {
     @apply border-border;
   }
 
-  html, body {
+  html,
+  body {
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
   }
 
   /* Prevent mobile browsers auto-zooming inputs by ensuring readable font size */
-  input, textarea, select, button {
+  input,
+  textarea,
+  select,
+  button {
     font-size: 16px;
   }
 
