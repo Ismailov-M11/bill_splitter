@@ -1,17 +1,23 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bill Splitter | Telegram WebApp</title>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
-      <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  </head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <!-- Говорим браузеру, что поддерживаем только светлую тему -->
+    <meta name="color-scheme" content="light only" />
+    <meta name="theme-color" content="#ffffff" />
 
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Bill Splitter</title>
+
+    <!-- Telegram WebApp API (должен быть в <head>) -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  </head>
   <body>
     <div id="root"></div>
-
     <script type="module" src="/client/main.tsx"></script>
   </body>
 </html>
