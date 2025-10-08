@@ -1,102 +1,119 @@
-/* ====== БАЗОВЫЕ ПЕРЕМЕННЫЕ (СВЕТЛАЯ ТЕМА) ====== */
-:root,
-[data-theme="light"] {
-  /* Фон/текст */
-  --bg-color: #ffffff;
-  --text-color: #0b0b0b;
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
 
-  /* Карточки/плашки */
-  --card-bg: #f7f7f8;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  /* Поля ввода */
-  --input-bg: #f4f4f4;
-  --input-border: #d0d0d0;
-  --input-text: #0b0b0b;
-
-  /* Подсказки/плэйсхолдеры/серый текст */
-  --muted-text: #6b7280;
-
-  /* Кнопки */
-  --btn-bg: #2ea6ff;
-  --btn-text: #ffffff;
-}
-
-/* ====== ГЛОБАЛ ====== */
-html,
-body,
-#root {
-  height: 100%;
-}
-
-html,
-body {
-  background: var(--bg-color);
-  color: var(--text-color);
-}
-
-/* Контейнеры/карточки, если используются */
-.card,
-.panel,
-.box,
-.container-surface {
-  background: var(--card-bg);
-  color: var(--text-color);
-}
-
-/* Поля ввода */
-input,
-textarea,
-select {
-  background: var(--input-bg);
-  color: var(--input-text);
-  border: 1px solid var(--input-border);
-  outline: none;
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: var(--muted-text);
-}
-
-/* Кнопки */
-button,
-.btn {
-  background: var(--btn-bg);
-  color: var(--btn-text);
-  border: none;
-}
-
-/*
-  ====== ФИКС: ПОЛНОЕ ОТКЛЮЧЕНИЕ ТЁМНОЙ ТЕМЫ ======
-  Даже если у системы/Telegram включён dark mode — форсим светлую.
-*/
-@media (prefers-color-scheme: dark) {
+@layer base {
+  /**
+   * Tailwind CSS theme
+   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
+   * A different format will require also updating the theme in tailwind.config.ts.
+  */
   :root {
-    color-scheme: light !important;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 204 94% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 97%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 97%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 97%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 14px;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  html,
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 6%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
+  /* Prevent mobile browsers auto-zooming inputs by ensuring readable font size */
+  input, textarea, select, button {
+    font-size: 16px;
+  }
+
   body {
-    background: var(--bg-color) !important;
-    color: var(--text-color) !important;
-  }
-
-  input,
-  textarea,
-  select {
-    background: var(--input-bg) !important;
-    color: var(--input-text) !important;
-    border-color: var(--input-border) !important;
-  }
-
-  input::placeholder,
-  textarea::placeholder {
-    color: var(--muted-text) !important;
-  }
-
-  button,
-  .btn {
-    background: var(--btn-bg) !important;
-    color: var(--btn-text) !important;
+    @apply bg-background text-foreground;
   }
 }
