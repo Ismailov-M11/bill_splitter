@@ -145,7 +145,7 @@ export default function Index() {
 
   const goToAssignList = () => {
     if (participants.length === 0) {
-      toast({ title: "Добавьте хотя бы одного участника перед назначением блюд." });
+      toast({ title: "Добавьте хотя бы одного участника перед назначе��ием блюд." });
       return;
     }
     setStage("assign_list");
@@ -225,6 +225,9 @@ export default function Index() {
         console.log("Telegram WebApp not detected, payload:", payload);
       }
       toast({ title: "✅ Отправлено успешно!" });
+      setTimeout(() => {
+        try { window?.Telegram?.WebApp?.close?.(); } catch {}
+      }, 2500);
       // navigate to result page with payload
       navigate("/result", { state: payload });
     } catch (e) {
