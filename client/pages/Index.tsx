@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
@@ -61,7 +60,6 @@ export default function Index() {
   }, []);
 
   const uid = (prefix = "id") => `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
-  const navigate = useNavigate();
 
   // Add dish: price is total for qty, we store totalPrice and create assignments array of length qty
   const addDish = () => {
@@ -168,71 +166,102 @@ export default function Index() {
       return;
     }
 
-    const map: Record<string, number> = {};
-    participants.forEach((p) => (map[p.id] = 0));
+    const baseMap: Record<string, number> = {};
+    participants.forEach((p) => (baseMap[p.id] = 0));
 
-    // Sum assigned units
     let unassignedTotal = 0;
-    let grandTotal = 0;
+    let baseTotalFloat = 0;
     dishes.forEach((d) => {
-      const unitPrice = d.totalPrice / d.qty;
-      grandTotal += d.totalPrice;
+      const unit = d.totalPrice / d.qty;
+      baseTotalFloat += d.totalPrice;
       d.assignments.forEach((a) => {
-        if (a && map[a] !== undefined) {
-          map[a] += unitPrice;
+        if (a && baseMap[a] !== undefined) {
+          baseMap[a] += unit;
         } else {
-          unassignedTotal += unitPrice;
+          unassignedTotal += unit;
         }
       });
     });
 
-    // distribute unassigned equally if any
     if (unassignedTotal > 0 && participants.length > 0) {
       const per = unassignedTotal / participants.length;
-      participants.forEach((p) => (map[p.id] += per));
+      participants.forEach((p) => (baseMap[p.id] += per));
     }
 
-    const svc = Number(servicePercent) || 0;
-    const svcMultiplier = 1 + svc / 100;
+    const base_total = Math.round(baseTotalFloat);
 
-    const roundedMap: Record<string, number> = {};
-    let totalWithService = 0;
+    const baseInts: Record<string, number> = {};
+    const baseRemainders: Array<{ id: string; rem: number }> = [];
+    let sumBaseInts = 0;
     participants.forEach((p) => {
-      const withSvc = map[p.id] * svcMultiplier;
-      const rounded = Math.round(withSvc * 100) / 100; // 2 decimals
-      roundedMap[p.id] = rounded;
-      totalWithService += rounded;
+      const v = baseMap[p.id] || 0;
+      const i = Math.floor(v);
+      baseInts[p.id] = i;
+      sumBaseInts += i;
+      baseRemainders.push({ id: p.id, rem: v - i });
+    });
+    let diff = base_total - sumBaseInts;
+    baseRemainders.sort((a, b) => b.rem - a.rem);
+    for (let i = 0; i < diff; i++) {
+      const target = baseRemainders[i % baseRemainders.length];
+      if (target) baseInts[target.id] += 1;
+    }
+
+    const service_pct = Math.round(Number(servicePercent) || 0);
+    const service_total = Math.round((base_total * service_pct) / 100);
+
+    const serviceFloats: Record<string, number> = {};
+    participants.forEach((p) => {
+      serviceFloats[p.id] = ((baseInts[p.id] || 0) * service_pct) / 100;
     });
 
-    setResult(roundedMap);
+    const serviceInts: Record<string, number> = {};
+    const serviceRemainders: Array<{ id: string; rem: number }> = [];
+    let sumServiceInts = 0;
+    participants.forEach((p) => {
+      const v = serviceFloats[p.id] || 0;
+      const i = Math.floor(v);
+      serviceInts[p.id] = i;
+      sumServiceInts += i;
+      serviceRemainders.push({ id: p.id, rem: v - i });
+    });
+    let sdiff = service_total - sumServiceInts;
+    serviceRemainders.sort((a, b) => b.rem - a.rem);
+    for (let i = 0; i < sdiff; i++) {
+      const target = serviceRemainders[i % serviceRemainders.length];
+      if (target) serviceInts[target.id] += 1;
+    }
+
+    const people = participants.map((p) => {
+      const base = baseInts[p.id] || 0;
+      const service = serviceInts[p.id] || 0;
+      return { name: p.name, base, service, total: base + service };
+    });
+
+    const total = base_total + service_total;
 
     const payload = {
-      type: "calculation",
-      servicePercent: svc,
-      participants: participants.map((p) => ({ id: p.id, name: p.name, amount: roundedMap[p.id] || 0 })),
-      dishes: dishes.map((d) => ({ id: d.id, name: d.name, qty: d.qty, totalPrice: d.totalPrice, assignments: d.assignments })),
-      total: Math.round(totalWithService * 100) / 100,
-    } as const;
+      base_total,
+      service_pct,
+      service_total,
+      total,
+      people,
+    };
 
     try {
       setSending(true);
-      const tg = window.Telegram?.WebApp;
-      if (tg && typeof tg.sendData === "function") {
-        tg.sendData(JSON.stringify(payload));
-      } else if (window.Telegram?.WebApp?.sendData) {
-        window.Telegram.WebApp.sendData(JSON.stringify(payload));
-      } else {
-        console.log("Telegram WebApp not detected, payload:", payload);
-      }
-      toast({ title: "✅ Отправлено успешно!" });
-      // navigate to result page with payload
-      navigate("/result", { state: payload });
+      window.Telegram?.WebApp?.sendData?.(JSON.stringify(payload));
+      toast({ title: "Итог отправлен в чат с ботом ✅" });
+      // Optionally close the webview:
+      // window.Telegram?.WebApp?.close?.();
     } catch (e) {
       console.error(e);
       toast({ title: "Ошибка при отправке в бота." });
     } finally {
       setSending(false);
     }
+
+    setResult(Object.fromEntries(participants.map((p) => [p.id, (baseInts[p.id] || 0) + (serviceInts[p.id] || 0)])));
   };
 
   // UI helpers
